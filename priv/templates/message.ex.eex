@@ -24,3 +24,9 @@ defmodule <%= name %> do
   extensions <%= extensions %>
   <% end %>
 end
+
+defmodule <%= name %>.ProtocolDef do
+  @moduledoc false
+  require Protocol
+  Protocol.derive(Jason.Encoder, <%= name %>)
+end
