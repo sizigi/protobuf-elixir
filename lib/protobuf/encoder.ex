@@ -88,6 +88,7 @@ defmodule Protobuf.Encoder do
   @doc false
   def skip_field?(syntax, val, prop)
   def skip_field?(_, [], _), do: true
+  def skip_field?(_, v, %{oneof: oneof}) when map_size(v) == 0 and not is_nil(oneof), do: false
   def skip_field?(_, v, _) when map_size(v) == 0, do: true
   def skip_field?(:proto2, nil, %{optional?: true}), do: true
   def skip_field?(:proto3, nil, _), do: true
