@@ -3,6 +3,7 @@ defmodule <%= name %> do
   use Protobuf<%= options %>
 
   <%= typespec %>
+  @derive [DeepMerge.Resolver]
   defstruct [<%= struct_fields %>]
 
   <%= if not is_nil(desc) do %>
@@ -29,4 +30,20 @@ defmodule <%= name %>.ProtocolDef do
   @moduledoc false
   require Protocol
   Protocol.derive(Jason.Encoder, <%= name %>)
+end
+
+defimpl DeepMerge.Resolver, for: <%= name %> do
+  def resolve(original, override = %<%= name %>{}, resolver) do
+    cleaned_override =
+      override
+      |> Map.from_struct()
+      |> Enum.reject(fn {_key, value} -> is_nil(value) end)
+      |> Map.new()
+
+    Map.merge(original, cleaned_override, resolver)
+  end
+
+  def resolve(original, override, resolver) when is_map(override) do
+    Map.merge(original, override, resolver)
+  end
 end
