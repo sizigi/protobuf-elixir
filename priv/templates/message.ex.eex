@@ -3,7 +3,7 @@ defmodule <%= name %> do
   use Protobuf<%= options %>
 
   <%= typespec %>
-  @derive [DeepMerge.Resolver]
+  @derive [Jason.Encoder]
   defstruct [<%= struct_fields %>]
 
   <%= if not is_nil(desc) do %>
@@ -24,12 +24,6 @@ defmodule <%= name %> do
   <%= if not is_nil(extensions) do %>
   extensions <%= extensions %>
   <% end %>
-end
-
-defmodule <%= name %>.ProtocolDef do
-  @moduledoc false
-  require Protocol
-  Protocol.derive(Jason.Encoder, <%= name %>)
 end
 
 defimpl DeepMerge.Resolver, for: <%= name %> do
